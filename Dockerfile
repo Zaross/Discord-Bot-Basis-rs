@@ -1,4 +1,3 @@
-# --- Build stage ---
 FROM rust:slim AS builder
 
 WORKDIR /app

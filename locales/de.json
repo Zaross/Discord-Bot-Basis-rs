@@ -1,0 +1,24 @@
+{
+  "ping": {
+    "pinging": "Prüfe...",
+    "pong": "🏓 Pong! Latenz: **{ms}ms**"
+  },
+  "info": {
+    "title": "ℹ️ Bot-Info",
+    "uptime": "Laufzeit",
+    "servers": "Server",
+    "version": "Version",
+    "owner": "Besitzer"
+  },
+  "support": {
+    "no_server": "Es wurde kein Support-Server konfiguriert.",
+    "no_channel": "Es konnte kein Kanal für eine Einladung gefunden werden.",
+    "title": "💬 Support-Server",
+    "description": "Brauchst du Hilfe? Tritt unserem Support-Server bei!\n\nhttps://discord.gg/{code}"
+  },
+  "errors": {
+    "generic": "Beim Ausführen dieses Befehls ist ein Fehler aufgetreten.",
+    "missing_permissions": "Du hast keine Berechtigung, diesen Befehl zu verwenden.",
+    "not_in_guild": "Dieser Befehl kann nur auf einem Server verwendet werden."
+  }
+}

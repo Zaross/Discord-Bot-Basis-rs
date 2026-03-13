@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    # Or use a pre-built image:
+    # image: ghcr.io/yourname/discord-bot:latest
+    restart: unless-stopped
+    environment:
+      - TOKEN=${TOKEN}
+      - OWNER_ID=${OWNER_ID}
+      - SUPPORT_SERVER=${SUPPORT_SERVER}
+      - RUST_LOG=info,serenity=warn
+    ports:
+      - "5000:5000"
+    volumes:
+      - bot_logs:/app/Logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  bot_logs:

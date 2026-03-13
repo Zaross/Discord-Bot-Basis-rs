@@ -1,0 +1,33 @@
+# --- Build stage ---
+FROM rust:1.77-slim AS builder
+
+WORKDIR /app
+
+# Cache dependencies separately
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo build --release
+RUN rm -rf src
+
+# Build the actual application
+COPY src ./src
+RUN touch src/main.rs && cargo build --release
+
+# --- Runtime stage ---
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y ca-certificates curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=builder /app/target/release/discord-bot .
+
+# Create logs directory
+RUN mkdir -p Logs
+
+EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+CMD ["./discord-bot"]

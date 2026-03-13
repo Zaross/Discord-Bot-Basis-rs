@@ -1,0 +1,24 @@
+{
+  "ping": {
+    "pinging": "Pinging...",
+    "pong": "🏓 Pong! Latency: **{ms}ms**"
+  },
+  "info": {
+    "title": "ℹ️ Bot Info",
+    "uptime": "Uptime",
+    "servers": "Servers",
+    "version": "Version",
+    "owner": "Owner"
+  },
+  "support": {
+    "no_server": "No support server has been configured.",
+    "no_channel": "Could not find a channel to create an invite.",
+    "title": "💬 Support Server",
+    "description": "Need help? Join our support server!\n\nhttps://discord.gg/{code}"
+  },
+  "errors": {
+    "generic": "An error occurred while executing this command.",
+    "missing_permissions": "You don't have permission to use this command.",
+    "not_in_guild": "This command can only be used in a server."
+  }
+}

@@ -16,9 +16,29 @@
     "title": "💬 Support Server",
     "description": "Need help? Join our support server!\n\nhttps://discord.gg/{code}"
   },
+  "userinfo": {
+    "title": "👤 {user}",
+    "id": "User ID",
+    "nickname": "Nickname",
+    "account_created": "Account Created",
+    "joined_server": "Joined Server",
+    "roles": "Roles"
+  },
+  "serverinfo": {
+    "title": "🏠 {name}",
+    "id": "Server ID",
+    "owner": "Owner",
+    "members": "Members",
+    "created": "Created",
+    "boost_level": "Boost Level"
+  },
+  "cooldown": {
+    "hit": "⏳ Slow down! Try again in **{seconds}s**."
+  },
   "errors": {
     "generic": "An error occurred while executing this command.",
     "missing_permissions": "You don't have permission to use this command.",
-    "not_in_guild": "This command can only be used in a server."
+    "not_in_guild": "This command can only be used in a server.",
+    "owner_only": "This command is restricted to the bot owner."
   }
 }

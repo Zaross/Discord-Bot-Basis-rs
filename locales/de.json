@@ -16,9 +16,29 @@
     "title": "💬 Support-Server",
     "description": "Brauchst du Hilfe? Tritt unserem Support-Server bei!\n\nhttps://discord.gg/{code}"
   },
+  "userinfo": {
+    "title": "👤 {user}",
+    "id": "Nutzer-ID",
+    "nickname": "Spitzname",
+    "account_created": "Konto erstellt",
+    "joined_server": "Server beigetreten",
+    "roles": "Rollen"
+  },
+  "serverinfo": {
+    "title": "🏠 {name}",
+    "id": "Server-ID",
+    "owner": "Besitzer",
+    "members": "Mitglieder",
+    "created": "Erstellt",
+    "boost_level": "Boost-Level"
+  },
+  "cooldown": {
+    "hit": "⏳ Nicht so schnell! Versuche es in **{seconds}s** erneut."
+  },
   "errors": {
     "generic": "Beim Ausführen dieses Befehls ist ein Fehler aufgetreten.",
     "missing_permissions": "Du hast keine Berechtigung, diesen Befehl zu verwenden.",
-    "not_in_guild": "Dieser Befehl kann nur auf einem Server verwendet werden."
+    "not_in_guild": "Dieser Befehl kann nur auf einem Server verwendet werden.",
+    "owner_only": "Dieser Befehl ist nur für den Bot-Besitzer verfügbar."
   }
 }

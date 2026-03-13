@@ -4,17 +4,20 @@ services:
   bot:
     build: .
     # Or use a pre-built image:
-    # image: ghcr.io/yourname/discord-bot:latest
+    # image: ghcr.io/zaross/discord-bot-basis-rs:latest
     restart: unless-stopped
     environment:
+      - BOT_NAME=${BOT_NAME:-MyBot}
       - TOKEN=${TOKEN}
       - OWNER_ID=${OWNER_ID}
       - SUPPORT_SERVER=${SUPPORT_SERVER}
-      - RUST_LOG=info,serenity=warn
+      - DATABASE_URL=${DATABASE_URL:-sqlite}
+      - RUST_LOG=info,serenity=warn,sqlx=warn
+      - SHARD_COUNT=${SHARD_COUNT:-auto}
     ports:
       - "5000:5000"
     volumes:
-      - bot_logs:/app/Logs
+      - bot_data:/app/${BOT_NAME:-MyBot}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
@@ -22,5 +25,17 @@ services:
       retries: 3
       start_period: 40s
 
+  # Optional Postgres service
+  # Set DATABASE_URL=postgres://bot:secret@db:5432/botdb in your .env
+  # db:
+  #   image: postgres:16-alpine
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: bot
+  #     POSTGRES_PASSWORD: secret
+  #     POSTGRES_DB: botdb
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+
 volumes:
-  bot_logs:
+  bot_data:

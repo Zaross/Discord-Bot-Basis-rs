@@ -3,50 +3,29 @@ use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
 
+/// Holds all loaded locale data.
+/// Locale files live in `locales/<lang>.json` at runtime.
+///
+/// # Usage
+/// ```rust
+/// let t = Translator::load("locales").unwrap();
+///
+/// // Simple key lookup, falls back to default locale
+/// let text = t.get("de", "ping.pong");
+///
+/// // With variable substitution: {ms} → "42"
+/// let text = t.get_with("de", "ping.pong", &[("ms", "42")]);
+/// ```
 pub struct Translator {
+    /// locale_code → flattened key→value map
     locales: HashMap<String, HashMap<String, String>>,
+    /// Fallback locale used when a key is missing in the requested locale
     default_locale: String,
 }
 
-/// Loads all locale JSON files from a directory and builds a [`Translator`].
-///
-/// # Behavior
-/// - Reads `*.json` files in `locales_dir`.
-/// - Uses each file stem (e.g. `en` from `en.json`) as the locale key.
-/// - Flattens and stores key/value translations per locale.
-/// - Logs successful loads and warns on per-file failures.
-/// - Fails if no locale files could be loaded.
-///
-/// # Default locale
-/// - Uses `"en"` if present.
-/// - Otherwise falls back to the first loaded locale.
-///
-/// # Errors
-/// Returns an error if the directory cannot be read or if no locale maps are loaded.
-
-/// Returns the translated string for `key` in `locale` with no variable substitution.
-///
-/// This is a convenience wrapper around [`Self::get_with`] with an empty variable list.
-
-/// Returns the translated string for `key` in `locale`, applying `{name}`-style substitutions
-/// from `vars`.
-///
-/// # Lookup order
-/// 1. Normalized requested locale.
-/// 2. Configured default locale.
-/// 3. Fallback to the key itself (and emits a warning).
-///
-/// # Parameters
-/// - `locale`: Requested locale identifier (normalized before lookup).
-/// - `key`: Translation key.
-/// - `vars`: Replacement pairs used by `substitute`.
-
-/// Returns all loaded locale identifiers.
-///
-/// Note: Ordering is not guaranteed.
-
-/// Returns `true` if a locale exists after normalization, otherwise `false`.
 impl Translator {
+    /// Load all `*.json` files from `locales_dir`.
+    /// Returns an error if the directory doesn't exist or no files could be loaded.
     pub fn load(locales_dir: impl AsRef<Path>) -> anyhow::Result<Self> {
         let dir = locales_dir.as_ref();
         let mut locales: HashMap<String, HashMap<String, String>> = HashMap::new();
@@ -109,17 +88,12 @@ impl Translator {
             .locales
             .get(lang)
             .and_then(|m| m.get(key))
-            .or_else(|| {
-                self.locales
-                    .get(&self.default_locale)
-                    .and_then(|m| m.get(key))
-            })
+            .or_else(|| {self.locales.get(&self.default_locale).and_then(|m| m.get(key))})
             .cloned()
             .unwrap_or_else(|| {
                 warn!("Missing translation key '{}' for locale '{}'", key, locale);
                 key.to_string()
             });
-
         substitute(raw, vars)
     }
 
@@ -156,6 +130,7 @@ fn flatten_value(prefix: &str, value: &Value, out: &mut HashMap<String, String>)
             out.insert(prefix.to_string(), s.clone());
         }
         other => {
+            // Numbers / bools / null → convert to string
             out.insert(prefix.to_string(), other.to_string());
         }
     }
@@ -176,3 +151,69 @@ fn normalize_locale(locale: &str) -> &str {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::tempdir;
+
+    fn make_translator() -> Translator {
+        let dir = tempdir().unwrap();
+        let en = dir.path().join("en.json");
+        let de = dir.path().join("de.json");
+
+        std::fs::write(
+            &en,
+            r#"{"ping": {"pong": "Pong! {ms}ms"}, "errors": {"generic": "Error"}}"#,
+        )
+        .unwrap();
+        std::fs::write(
+            &de,
+            r#"{"ping": {"pong": "Pong! {ms}ms (de)"}}"#,
+        )
+        .unwrap();
+
+        let path = dir.keep();
+        Translator::load(path).unwrap()
+    }
+
+    #[test]
+    fn basic_lookup() {
+        let t = make_translator();
+        assert_eq!(t.get("en", "errors.generic"), "Error");
+    }
+
+    #[test]
+    fn substitution() {
+        let t = make_translator();
+        assert_eq!(
+            t.get_with("en", "ping.pong", &[("ms", "42")]),
+            "Pong! 42ms"
+        );
+    }
+
+    #[test]
+    fn fallback_to_default() {
+        let t = make_translator();
+        // "de" has no errors.generic → should fall back to "en"
+        assert_eq!(t.get("de", "errors.generic"), "Error");
+    }
+
+    #[test]
+    fn discord_locale_normalization() {
+        let t = make_translator();
+        assert_eq!(
+            t.get_with("de-DE", "ping.pong", &[("ms", "5")]),
+            "Pong! 5ms (de)"
+        );
+        assert_eq!(
+            t.get_with("en-US", "ping.pong", &[("ms", "5")]),
+            "Pong! 5ms"
+        );
+    }
+
+    #[test]
+    fn missing_key_returns_key() {
+        let t = make_translator();
+        assert_eq!(t.get("en", "totally.missing.key"), "totally.missing.key");
+    }
+}

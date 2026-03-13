@@ -1,3 +1,4 @@
+# --- Build stage ---
 FROM rust:slim AS builder
 
 WORKDIR /app
@@ -8,6 +9,7 @@ RUN cargo build --release
 RUN rm -rf src
 
 COPY src ./src
+COPY migrations ./migrations
 RUN touch src/main.rs && cargo build --release
 
 FROM debian:bookworm-slim
@@ -17,12 +19,11 @@ RUN apt-get update && apt-get install -y ca-certificates curl && rm -rf /var/lib
 WORKDIR /app
 
 COPY --from=builder /app/target/release/discord-bot .
-
-RUN mkdir -p Logs
+COPY --from=builder /app/migrations ./migrations
+COPY locales ./locales
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:5000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \ CMD curl -f http://localhost:5000/health || exit 1
 
 CMD ["./discord-bot"]

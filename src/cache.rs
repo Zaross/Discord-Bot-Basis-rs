@@ -59,7 +59,6 @@ impl GuildCache {
         self.inner.remove(&guild_id);
     }
 
-    /// Current number of cached guilds.
     pub fn len(&self) -> usize {
         self.inner.len()
     }

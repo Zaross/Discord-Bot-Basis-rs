@@ -2,3 +2,4 @@
 .env
 Logs/
 *.log
+*.lock

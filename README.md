@@ -1,6 +1,6 @@
 # Discord Bot (Rust / Serenity)
 
-A Discord bot foundation built with [Serenity](https://github.com/serenity-rs/serenity) and [Poise](https://github.com/serenity-rs/poise). Uses slash commands, structured logging, and a health check endpoint.
+A Discord bot built with [Serenity](https://github.com/serenity-rs/serenity) and [Poise](https://github.com/serenity-rs/poise). Uses slash commands, structured logging, and a health check endpoint.
 
 ## Features
 

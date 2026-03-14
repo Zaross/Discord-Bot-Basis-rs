@@ -2,10 +2,12 @@
 
 A Discord bot Template built with [Serenity](https://github.com/serenity-rs/serenity) and [Poise](https://github.com/serenity-rs/poise). Uses slash commands, per-user i18n, structured logging, and a health check endpoint.
 
+Custommodules for the bot you can find [here](https://github.com/Zaross/Discord-Bot-Basis-rs-Custommodules)
+
 ## Features
 
 - ✅ Slash commands with Poise
-- ✅ i18n — JSON locale files, automatic fallback, `{placeholder}` substitution
+- ✅ i18n — JSON locale files, automatic fallback, `{en}` substitution
 - ✅ SQLite **or** Postgres — switch via `DATABASE_URL`, no recompile needed
 - ✅ Auto-migrations on startup (`migrations/`)
 - ✅ Pretty console + rolling log files under `{BOT_NAME}/logs/`

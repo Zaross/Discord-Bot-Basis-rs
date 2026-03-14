@@ -22,7 +22,8 @@
     "nickname": "Spitzname",
     "account_created": "Konto erstellt",
     "joined_server": "Server beigetreten",
-    "roles": "Rollen"
+    "roles": "Rollen",
+    "footer_id": "ID: {id}"
   },
   "serverinfo": {
     "title": "🏠 {name}",
@@ -40,5 +41,32 @@
     "missing_permissions": "Du hast keine Berechtigung, diesen Befehl zu verwenden.",
     "not_in_guild": "Dieser Befehl kann nur auf einem Server verwendet werden.",
     "owner_only": "Dieser Befehl ist nur für den Bot-Besitzer verfügbar."
+  },
+  "setup": {
+    "start": "⚙️ **Server-Einrichtung**\nKonfiguriere alle Einstellungen und klicke auf **Speichern**.",
+    "timeout": "⏱️ Zeitüberschreitung — Einrichtung abgebrochen.",
+    "cancelled": "❌ Einrichtung abgebrochen.",
+    "not_set": "*(nicht gesetzt)*",
+    "buttons": {
+      "save": "Speichern",
+      "cancel": "Abbrechen"
+    },
+    "placeholders": {
+      "language": "🌐 Sprache wählen…",
+      "log_channel": "📋 Log-Kanal (optional)"
+    },
+    "summary": {
+      "title": "✅ Einrichtung abgeschlossen!",
+      "language": "🌐 Sprache",
+      "log_channel": "📋 Log-Kanal",
+      "footer": "Einstellungen können jederzeit mit /setup erneut geändert werden."
+    }
+  },
+  "cronjobs": {
+      "starting": "Starte Cronjobs..."
+  },
+  "common": {
+    "unknown": "Unbekannt",
+    "none": "-"
   }
 }

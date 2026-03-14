@@ -3,29 +3,12 @@ use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
 
-/// Holds all loaded locale data.
-/// Locale files live in `locales/<lang>.json` at runtime.
-///
-/// # Usage
-/// ```rust
-/// let t = Translator::load("locales").unwrap();
-///
-/// // Simple key lookup, falls back to default locale
-/// let text = t.get("de", "ping.pong");
-///
-/// // With variable substitution: {ms} → "42"
-/// let text = t.get_with("de", "ping.pong", &[("ms", "42")]);
-/// ```
 pub struct Translator {
-    /// locale_code → flattened key→value map
     locales: HashMap<String, HashMap<String, String>>,
-    /// Fallback locale used when a key is missing in the requested locale
     default_locale: String,
 }
 
 impl Translator {
-    /// Load all `*.json` files from `locales_dir`.
-    /// Returns an error if the directory doesn't exist or no files could be loaded.
     pub fn load(locales_dir: impl AsRef<Path>) -> anyhow::Result<Self> {
         let dir = locales_dir.as_ref();
         let mut locales: HashMap<String, HashMap<String, String>> = HashMap::new();
@@ -88,7 +71,7 @@ impl Translator {
             .locales
             .get(lang)
             .and_then(|m| m.get(key))
-            .or_else(|| {self.locales.get(&self.default_locale).and_then(|m| m.get(key))})
+            .or_else(|| self.locales.get(&self.default_locale).and_then(|m| m.get(key)))
             .cloned()
             .unwrap_or_else(|| {
                 warn!("Missing translation key '{}' for locale '{}'", key, locale);
@@ -130,7 +113,6 @@ fn flatten_value(prefix: &str, value: &Value, out: &mut HashMap<String, String>)
             out.insert(prefix.to_string(), s.clone());
         }
         other => {
-            // Numbers / bools / null → convert to string
             out.insert(prefix.to_string(), other.to_string());
         }
     }
@@ -194,7 +176,6 @@ mod tests {
     #[test]
     fn fallback_to_default() {
         let t = make_translator();
-        // "de" has no errors.generic → should fall back to "en"
         assert_eq!(t.get("de", "errors.generic"), "Error");
     }
 

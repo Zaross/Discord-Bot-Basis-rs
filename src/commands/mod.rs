@@ -5,6 +5,7 @@ mod ping;
 mod serverinfo;
 mod support;
 mod userinfo;
+mod setup;
 
 use crate::{Data, Error};
 
@@ -18,5 +19,6 @@ pub fn all_commands() -> Vec<poise::Command<Data, Error>> {
         serverinfo::serverinfo(),
         admin::status(),
         admin::sql(),
+        setup::setup(),
     ]
 }
